@@ -1,0 +1,43 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'java'
+}
+
+jar {
+    finalizedBy shadowJar
+    manifest {
+        attributes 'Main-Class': 'com.yohan.auth.CustomUserStorageProviderFactory'
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.yohan.auth.CustomUserStorageProviderFactory'
+    }
+//    archiveClassifier = "all"
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.keycloak', name: 'keycloak-core', version: '16.1.1'
+    compile group: 'org.keycloak',name: 'keycloak-server-spi', version:  '16.1.1'
+    compile group: 'org.slf4j', name: 'slf4j-api',version:  '1.7.31'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+}
